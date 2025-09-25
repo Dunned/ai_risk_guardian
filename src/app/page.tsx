@@ -2,7 +2,7 @@
 'use client';
 
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useRef, useEffect } from 'react';
 
 type Mensaje = { de: 'usuario' | 'bot'; texto: string };
 
@@ -11,6 +11,11 @@ export default function Page() {
   const [chat, setChat] = useState<Mensaje[]>([]);
   const [msg, setMsg] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chat]);
 
   // Si no hay sesión, mostramos botón de login
   if (!session) {
@@ -105,50 +110,193 @@ export default function Page() {
 
   return (
     <div className="h-full flex flex-col p-4 relative z-10">
-      <header className="mb-4 flex justify-between items-center">
-        <div>
-          <span className="font-medium">¡Hola, {session.user?.email}!</span>
+      {/* Header elegante */}
+      <header className="mb-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 p-6">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5-6v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-slate-800">AI Risk Guardian</h1>
+              <p className="text-slate-600 text-sm">¡Hola, {session.user?.name || session.user?.email}!</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-slate-600">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>En línea</span>
+            </div>
+            <button
+              onClick={() => signOut()}
+              className="text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-100 px-3 py-2 rounded-lg transition-all duration-300 hover:shadow-md"
+            >
+              Cerrar sesión
+            </button>
+          </div>
         </div>
-        <button
-          onClick={() => signOut()}
-          className="text-sm text-slate-600 hover:text-slate-800 hover:underline transition-colors"
-        >
-          Cerrar sesión
-        </button>
       </header>
 
-      <div className="flex-1 overflow-y-auto space-y-3 pb-4">
+      {/* Chat Container */}
+      <div className="flex-1 overflow-y-auto space-y-4 pb-4 px-2">
+        {chat.length === 0 && (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center max-w-md">
+              <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl animate-pulse">
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-slate-800 mb-3">¡Bienvenido a AI Risk Guardian!</h2>
+              <p className="text-slate-600 leading-relaxed">
+                Soy tu asistente especializado en <strong>Model Risk Management</strong>. 
+                Puedo ayudarte con validación de modelos, cumplimiento regulatorio, 
+                gestión de riesgos y documentación técnica.
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-2">
+                <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Validación</span>
+                <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium">Regulatorio</span>
+                <span className="px-3 py-1 bg-slate-100 text-slate-800 rounded-full text-sm font-medium">Riesgos</span>
+                <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">Documentación</span>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {chat.map((m, i) => (
           <div
             key={i}
-            className={`p-3 rounded max-w-[70%] ${
-              m.de === 'usuario'
-                ? 'ml-auto bg-blue-100/80 backdrop-blur-sm text-right border border-blue-200/50'
-                : 'mr-auto bg-white/80 backdrop-blur-sm border border-slate-200/50'
-            }`}
+            className={`flex ${m.de === 'usuario' ? 'justify-end' : 'justify-start'} animate-fade-in`}
+            style={{ animationDelay: `${i * 0.1}s` }}
           >
-            {m.texto}
+            <div className={`flex items-start gap-3 max-w-[80%] ${m.de === 'usuario' ? 'flex-row-reverse' : ''}`}>
+              {/* Avatar */}
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg flex-shrink-0 ${
+                m.de === 'usuario' 
+                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600' 
+                  : 'bg-gradient-to-r from-slate-600 to-slate-700'
+              }`}>
+                {m.de === 'usuario' ? (
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5-6v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z" />
+                  </svg>
+                )}
+              </div>
+              
+              {/* Message Bubble */}
+              <div className={`p-4 rounded-2xl shadow-lg backdrop-blur-sm border transition-all duration-300 hover:shadow-xl ${
+                m.de === 'usuario'
+                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-blue-200/50 rounded-br-md'
+                  : 'bg-white/90 text-slate-800 border-slate-200/50 rounded-bl-md'
+              }`}>
+                <div className={`text-sm leading-relaxed ${m.de === 'usuario' ? 'text-blue-50' : 'text-slate-700'}`}>
+                  {m.de === 'bot' && (
+                    <div className="flex items-center gap-2 mb-2 pb-2 border-b border-slate-200">
+                      <span className="font-semibold text-slate-800">AI Risk Guardian</span>
+                      <span className="text-xs text-slate-500">• Especialista MRM</span>
+                    </div>
+                  )}
+                  <div className="whitespace-pre-wrap">{m.texto}</div>
+                </div>
+              </div>
+            </div>
           </div>
         ))}
+        
+        {loading && (
+          <div className="flex justify-start animate-fade-in">
+            <div className="flex items-start gap-3 max-w-[80%]">
+              <div className="w-10 h-10 bg-gradient-to-r from-slate-600 to-slate-700 rounded-full flex items-center justify-center shadow-lg">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5-6v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z" />
+                </svg>
+              </div>
+              <div className="bg-white/90 backdrop-blur-sm p-4 rounded-2xl rounded-bl-md shadow-lg border border-slate-200/50">
+                <div className="flex items-center gap-2 mb-2 pb-2 border-b border-slate-200">
+                  <span className="font-semibold text-slate-800">AI Risk Guardian</span>
+                  <span className="text-xs text-slate-500">• Analizando...</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2 h-2 bg-slate-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  </div>
+                  <span className="text-sm text-slate-600">Procesando consulta...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <div ref={chatEndRef} />
       </div>
 
-      <form onSubmit={enviar} className="mt-2 flex gap-2">
-        <input
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-          placeholder="Escribe tu mensaje…"
-          value={msg}
-          onChange={(e) => setMsg(e.target.value)}
-          disabled={loading}
-          required
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg disabled:opacity-50 transition-all duration-300 hover:shadow-lg hover:scale-105 transform"
-        >
-          {loading ? '…' : 'Enviar'}
-        </button>
+      {/* Input Form */}
+      <form onSubmit={enviar} className="mt-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 p-4">
+        <div className="flex gap-3 items-end">
+          <div className="flex-1">
+            <div className="relative">
+              <input
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 pr-12 bg-white/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 placeholder-slate-500"
+                placeholder="Pregúntame sobre Model Risk Management..."
+                value={msg}
+                onChange={(e) => setMsg(e.target.value)}
+                disabled={loading}
+                required
+              />
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+            </div>
+            <div className="flex items-center justify-between mt-2 px-1">
+              <div className="flex gap-2">
+                <span className="text-xs text-slate-500">Ejemplos:</span>
+                <button
+                  type="button"
+                  onClick={() => setMsg('¿Qué es la validación de modelos?')}
+                  className="text-xs text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                  disabled={loading}
+                >
+                  Validación
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMsg('¿Cuáles son los requisitos regulatorios?')}
+                  className="text-xs text-indigo-600 hover:text-indigo-800 hover:underline transition-colors"
+                  disabled={loading}
+                >
+                  Regulatorio
+                </button>
+              </div>
+              <span className="text-xs text-slate-400">{msg.length}/500</span>
+            </div>
+          </div>
+          <button
+            type="submit"
+            disabled={loading || !msg.trim()}
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-slate-400 disabled:to-slate-500 text-white p-3 rounded-xl disabled:opacity-50 transition-all duration-300 hover:shadow-lg hover:scale-105 transform flex items-center justify-center min-w-[48px]"
+          >
+            {loading ? (
+              <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+            )}
+          </button>
+        </div>
       </form>
     </div>
-);
+  );
 }
