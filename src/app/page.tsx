@@ -20,17 +20,17 @@ export default function Page() {
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5-6v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z" />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">MiTiendaGPT</h1>
-            <p className="text-gray-600 text-lg">Tu asistente inteligente para ventas</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">AI Risk Guardian</h1>
+            <p className="text-gray-600 text-lg">Asistente especializado en gestión de riesgo de modelos</p>
           </div>
           
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-xl font-semibold text-gray-800 mb-2">Bienvenido</h2>
-              <p className="text-gray-600 text-sm">Inicia sesión para comenzar a chatear con tu asistente de IA</p>
+              <p className="text-gray-600 text-sm">Inicia sesión para acceder a tu consultor especializado en Model Risk Management</p>
             </div>
             
             <button
@@ -48,7 +48,7 @@ export default function Page() {
             
             <div className="text-center">
               <p className="text-xs text-gray-500">
-                Al continuar, aceptas nuestros términos de servicio y política de privacidad
+                Acceso exclusivo para personal autorizado del banco
               </p>
             </div>
           </div>
@@ -59,19 +59,19 @@ export default function Page() {
                 <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
-                Seguro
+                Confidencial
               </span>
               <span className="flex items-center gap-1">
                 <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
                 </svg>
-                Rápido
+                Especializado
               </span>
               <span className="flex items-center gap-1">
                 <svg className="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Confiable
+                Regulatorio
               </span>
             </div>
           </div>
