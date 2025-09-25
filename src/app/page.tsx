@@ -244,7 +244,11 @@ export default function Page() {
           <div className="flex-1">
             <div className="relative">
               <input
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 pr-12 bg-white/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 placeholder-slate-500"
+                className="w-full rounded-xl border border-slate-300 px-4 py-3 pr-12 bg-white/90 backdrop-blur-sm
+                          text-slate-900 caret-indigo-600
+                          placeholder-slate-400
+                          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                          transition-all duration-300"
                 placeholder="Pregúntame sobre Model Risk Management..."
                 value={msg}
                 onChange={(e) => setMsg(e.target.value)}
